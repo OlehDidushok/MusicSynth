@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE691C4C2DCA4B1400BF35CC /* Keyboard in Frameworks */ = {isa = PBXBuildFile; productRef = CE691C4B2DCA4B1400BF35CC /* Keyboard */; };
+		CE691C602DCA6ABD00BF35CC /* DunneAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = CE691C5F2DCA6ABD00BF35CC /* DunneAudioKit */; };
 		CEE85A8B2DC8FBB50057F253 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = CEE85A8A2DC8FBB50057F253 /* AudioKit */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 			files = (
 				CEE85A8B2DC8FBB50057F253 /* AudioKit in Frameworks */,
 				CE691C4C2DCA4B1400BF35CC /* Keyboard in Frameworks */,
+				CE691C602DCA6ABD00BF35CC /* DunneAudioKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				CEE85A8A2DC8FBB50057F253 /* AudioKit */,
 				CE691C4B2DCA4B1400BF35CC /* Keyboard */,
+				CE691C5F2DCA6ABD00BF35CC /* DunneAudioKit */,
 			);
 			productName = MusicSynth;
 			productReference = CEE85A662DC8F9110057F253 /* MusicSynth.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				CEE85A892DC8FBB50057F253 /* XCRemoteSwiftPackageReference "AudioKit" */,
 				CE691C4A2DCA4B1400BF35CC /* XCRemoteSwiftPackageReference "Keyboard" */,
+				CE691C5E2DCA6ABD00BF35CC /* XCRemoteSwiftPackageReference "DunneAudioKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CEE85A672DC8F9110057F253 /* Products */;
@@ -347,6 +351,14 @@
 				minimumVersion = 1.4.1;
 			};
 		};
+		CE691C5E2DCA6ABD00BF35CC /* XCRemoteSwiftPackageReference "DunneAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/DunneAudioKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.1;
+			};
+		};
 		CEE85A892DC8FBB50057F253 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AudioKit/AudioKit.git";
@@ -362,6 +374,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE691C4A2DCA4B1400BF35CC /* XCRemoteSwiftPackageReference "Keyboard" */;
 			productName = Keyboard;
+		};
+		CE691C5F2DCA6ABD00BF35CC /* DunneAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE691C5E2DCA6ABD00BF35CC /* XCRemoteSwiftPackageReference "DunneAudioKit" */;
+			productName = DunneAudioKit;
 		};
 		CEE85A8A2DC8FBB50057F253 /* AudioKit */ = {
 			isa = XCSwiftPackageProductDependency;
