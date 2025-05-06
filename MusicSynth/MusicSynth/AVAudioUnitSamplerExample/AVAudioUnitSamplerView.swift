@@ -1,18 +1,17 @@
 //
-//  AppleSampleView.swift
+//  AVAudioUnitSamplerView.swift
 //  MusicSynth
 //
 //  Created by Oleh on 06.05.2025.
 //
 
-import Foundation
 import SwiftUI
 import Keyboard
 import Tonic
-import AudioKit
 
-struct AppleSampleView: View {
-    @StateObject var viewModel = AppleSampleViewModel()
+struct AVAudioUnitSamplerView: View {
+    @StateObject var viewModel = AVAudioUnitSamplerViewModel()
+    
     var body: some View {
         ZStack {
             RadialGradient(gradient: Gradient(colors: [.green.opacity(0.5), .black]), center: .center, startRadius: 2, endRadius: 650).edgesIgnoringSafeArea(.all)
@@ -26,11 +25,11 @@ struct AppleSampleView: View {
                                 pressedColor: Color.pink,
                                 flatTop: true)
                 }
-            }.onDisappear() { self.viewModel.engine.stop() }
+            }.onDisappear() { viewModel.engine.stop() }
         }
     }
 }
 
 #Preview {
-    AppleSampleView()
+    AVAudioUnitSamplerView()
 }
