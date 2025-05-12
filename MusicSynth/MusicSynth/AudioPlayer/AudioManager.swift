@@ -79,6 +79,14 @@ class AudioManager: ObservableObject {
         currentTime = time
     }
     
+    func playTrack(at index: Int) {
+        guard index >= 0 && index < tracks.count else { return }
+        currentTrackIndex = index
+        loadTrack(at: index)
+        player?.play()
+        isPlaying = true
+    }
+    
     func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
