@@ -9,27 +9,38 @@ import SwiftUI
 
 struct MusicPlayerView: View {
     @StateObject private var audioManager = AudioManager()
+    @State private var isSwitched = false
     
     var body: some View {
         VStack(spacing: 20) {
             // 📜 Track List
-            List {
-                ForEach(Array(audioManager.trackNames.enumerated()), id: \.offset) { index, name in
-                    HStack {
-                        Text(name)
-                            .fontWeight(audioManager.activeTrackName == name ? .bold : .regular)
-                        Spacer()
-                        if audioManager.activeTrackName == name {
-                            Image(systemName: "music.note")
-                        }
+            List(audioManager.trackNames, id: \.self) { song in
+                HStack {
+                    Text(song)
+                        .fontWeight(song == audioManager.activeTrackName ? .bold : .regular)
+                    Spacer()
+                    if song == audioManager.activeTrackName {
+                        Image(systemName: "music.note")
                     }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        audioManager.playTrack(at: index)
+                }
+                .contentShape(Rectangle()) // makes the entire row tappable
+                .onTapGesture {
+                    if let index = audioManager.trackNames.firstIndex(of: song) {
+                        audioManager.loadTrack(at: index)
+                        audioManager.play()
                     }
                 }
             }
             
+            HStack {
+                Spacer()
+                Toggle("Switch", isOn: $isSwitched)
+                    .onChange(of: isSwitched) { _ in
+                        audioManager.switchPlaylist()
+                    }
+                    .toggleStyle(SwitchToggleStyle())
+                    .padding()
+            }
             // 🎵 Current Track
             Text(audioManager.activeTrackName)
                 .font(.title2)

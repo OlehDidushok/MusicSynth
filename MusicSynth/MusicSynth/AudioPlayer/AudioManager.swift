@@ -13,24 +13,51 @@ class AudioManager: ObservableObject {
     @Published var isPlaying = false
     @Published var currentTime: TimeInterval = 0
     @Published var duration: TimeInterval = 1
-    @Published var trackNames: [String] = ["Track 1", "Track 2", "Track 3"]
-    @Published var activeTrackName: String = "Track 1"
+    @Published var trackNames: [String] = []
+    @Published var activeTrackName: String = ""
+    
+    private var playlistUsual = ["track1", "track2"]
+    private var playlistMidi: [String] = ["track3"]
     
     private var player: AVAudioPlayer?
     private var currentTrackIndex: Int = 0
     private var displayLink: CADisplayLink?
     
     init() {
-        loadTrack(at: 0)
+        switchToPlaylistA()
     }
     
-    private func loadTrack(at index: Int) {
+    func switchPlaylist() {
+        if trackNames == playlistUsual {
+            switchToPlaylistB()
+        } else {
+            switchToPlaylistA()
+        }
+    }
+
+    private func switchToPlaylistA() {
+        trackNames = playlistUsual
+        activeTrackName = trackNames.first ?? ""
+        if let index = trackNames.firstIndex(of: activeTrackName) {
+            loadTrack(at: index)
+        }
+    }
+    
+    private func switchToPlaylistB() {
+        trackNames = playlistMidi
+        activeTrackName = trackNames.first ?? ""
+        if let index = trackNames.firstIndex(of: activeTrackName) {
+            loadTrack(at: index)
+        }
+    }
+    
+    func loadTrack(at index: Int) {
         guard index >= 0, index < trackNames.count else { return }
         
         currentTrackIndex = index
         activeTrackName = trackNames[index]
         
-        guard let url = Bundle.main.url(forResource: "track\(index + 1)", withExtension: "mp3") else {
+        guard let url = Bundle.main.url(forResource: activeTrackName, withExtension: "mp3") else {
             print("Audio file not found.")
             return
         }
