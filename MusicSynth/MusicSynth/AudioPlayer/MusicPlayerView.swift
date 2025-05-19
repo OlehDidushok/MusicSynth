@@ -12,72 +12,75 @@ struct MusicPlayerView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            // Now playing label
-            Text("Now Playing: \(audioManager.activeTrackName.capitalized)")
-                .font(.headline)
+            // 📜 Track List
+            List {
+                ForEach(Array(audioManager.trackNames.enumerated()), id: \.offset) { index, name in
+                    HStack {
+                        Text(name)
+                            .fontWeight(audioManager.activeTrackName == name ? .bold : .regular)
+                        Spacer()
+                        if audioManager.activeTrackName == name {
+                            Image(systemName: "music.note")
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        audioManager.playTrack(at: index)
+                    }
+                }
+            }
+            
+            // 🎵 Current Track
+            Text(audioManager.activeTrackName)
+                .font(.title2)
                 .padding(.top)
             
-            // Progress slider
+            // 🕓 Time Labels & Slider
             VStack {
-                Slider(value: Binding(
-                    get: { audioManager.currentTime },
-                    set: { audioManager.seek(to: $0) }
-                ), in: 0...(audioManager.duration == 0 ? 1 : audioManager.duration))
-                
                 HStack {
                     Text(audioManager.formatTime(audioManager.currentTime))
                     Spacer()
                     Text(audioManager.formatTime(audioManager.duration))
                 }
-                .font(.caption)
-                .foregroundColor(.gray)
+                Slider(
+                    value: Binding(
+                        get: { audioManager.currentTime },
+                        set: { newValue in
+                            audioManager.seek(to: newValue)
+                        }
+                    ),
+                    in: 0...audioManager.duration
+                )
             }
-            .padding(.horizontal)
+            .padding()
             
-            // Playback controls
+            // ▶️ Player Controls
             HStack(spacing: 40) {
                 Button(action: {
                     audioManager.previousTrack()
                 }) {
                     Image(systemName: "backward.fill")
-                        .font(.largeTitle)
+                        .resizable()
+                        .frame(width: 30, height: 30)
                 }
                 
                 Button(action: {
-                    audioManager.playPause()
+                    audioManager.togglePlayPause()
                 }) {
                     Image(systemName: audioManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.green)
+                        .resizable()
+                        .frame(width: 50, height: 50)
                 }
                 
                 Button(action: {
                     audioManager.nextTrack()
                 }) {
                     Image(systemName: "forward.fill")
-                        .font(.largeTitle)
+                        .resizable()
+                        .frame(width: 30, height: 30)
                 }
             }
-            
-            Divider().padding(.top, 20)
-            
-            // Track list
-            List {
-                ForEach(Array(audioManager.trackNames.enumerated()), id: \.offset) { index, name in
-                    HStack {
-                        Text(name.capitalized)
-                            .foregroundColor(audioManager.activeTrackName == name ? .blue : .primary)
-                        if audioManager.activeTrackName == name {
-                            Spacer()
-                            Image(systemName: "music.note")
-                        }
-                    }
-                    .onTapGesture {
-                        audioManager.playTrack(at: index)
-                        
-                    }
-                }
-            }
+            .padding(.bottom, 20)
         }
         .padding()
     }

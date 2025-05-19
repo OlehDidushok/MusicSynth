@@ -10,68 +10,57 @@ import AVFoundation
 import MediaPlayer
 
 class AudioManager: ObservableObject {
-    private var player: AVAudioPlayer?
-    private var currentTrackIndex = 0
-    private let tracks = ["track1", "track2", "track3"] // my music
-    private var timer: Timer?
-    
     @Published var isPlaying = false
     @Published var currentTime: TimeInterval = 0
-    @Published var duration: TimeInterval = 0
-    @Published var activeTrackName: String = ""
+    @Published var duration: TimeInterval = 1
+    @Published var trackNames: [String] = ["Track 1", "Track 2", "Track 3"]
+    @Published var activeTrackName: String = "Track 1"
     
-    var trackNames: [String] {
-        tracks
-    }
+    private var player: AVAudioPlayer?
+    private var currentTrackIndex: Int = 0
+    private var displayLink: CADisplayLink?
     
     init() {
-        configureRemoteCommands()
-        loadTrack(at: currentTrackIndex)
+        loadTrack(at: 0)
     }
     
     private func loadTrack(at index: Int) {
-        guard let url = Bundle.main.url(forResource: tracks[index], withExtension: "mp3") else {
-            print("Track not found")
+        guard index >= 0, index < trackNames.count else { return }
+        
+        currentTrackIndex = index
+        activeTrackName = trackNames[index]
+        
+        guard let url = Bundle.main.url(forResource: "track\(index + 1)", withExtension: "mp3") else {
+            print("Audio file not found.")
             return
         }
         
         do {
             player = try AVAudioPlayer(contentsOf: url)
             player?.prepareToPlay()
-            duration = player?.duration ?? 0
-            activeTrackName = tracks[index]
-            startProgressUpdates()
+            duration = player?.duration ?? 1
+            currentTime = 0
         } catch {
-            print("Failed to load track: \(error)")
+            print("Error loading audio: \(error.localizedDescription)")
         }
     }
     
-    func playPause() {
-        guard let player = player else { return }
-        
-        if player.isPlaying {
-            player.pause()
-            isPlaying = false
-            stopProgressUpdates()
-        } else {
-            player.play()
-            isPlaying = true
-            startProgressUpdates()
-        }
-    }
-    
-    func nextTrack() {
-        currentTrackIndex = (currentTrackIndex + 1) % tracks.count
-        loadTrack(at: currentTrackIndex)
+    func play() {
         player?.play()
         isPlaying = true
+        startRemoteControl()
+        startDisplayLink()
     }
     
-    func previousTrack() {
-        currentTrackIndex = (currentTrackIndex - 1 + tracks.count) % tracks.count
-        loadTrack(at: currentTrackIndex)
-        player?.play()
-        isPlaying = true
+    func pause() {
+        player?.pause()
+        isPlaying = false
+        stopRemoteControl()
+        stopDisplayLink()
+    }
+    
+    func togglePlayPause() {
+        isPlaying ? pause() : play()
     }
     
     func seek(to time: TimeInterval) {
@@ -79,58 +68,84 @@ class AudioManager: ObservableObject {
         currentTime = time
     }
     
-    func playTrack(at index: Int) {
-        guard index >= 0 && index < tracks.count else { return }
-        currentTrackIndex = index
-        loadTrack(at: index)
-        player?.play()
-        isPlaying = true
+    func nextTrack() {
+        let nextIndex = (currentTrackIndex + 1) % trackNames.count
+        playTrack(at: nextIndex)
     }
     
+    func previousTrack() {
+        let prevIndex = (currentTrackIndex - 1 + trackNames.count) % trackNames.count
+        playTrack(at: prevIndex)
+    }
+    
+    func playTrack(at index: Int) {
+        loadTrack(at: index)
+        play()
+    }
+    
+    // MARK: - DisplayLink
+    private func startDisplayLink() {
+        stopDisplayLink()
+        displayLink = CADisplayLink(target: self, selector: #selector(updateTime))
+        displayLink?.add(to: .main, forMode: .common)
+    }
+    
+    private func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+    
+    @objc private func updateTime() {
+        guard let player = player else { return }
+        currentTime = player.currentTime
+        duration = player.duration
+    }
+    
+    // MARK: - Helpers
     func formatTime(_ time: TimeInterval) -> String {
-        let minutes = Int(time) / 60
-        let seconds = Int(time) % 60
+        let totalSeconds = Int(time)
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
     
-    private func startProgressUpdates() {
-        stopProgressUpdates()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
-            guard let self = self, let player = self.player else { return }
-            self.currentTime = player.currentTime
-            self.duration = player.duration
-        }
+    deinit {
+        stopDisplayLink()
     }
     
-    private func stopProgressUpdates() {
-        timer?.invalidate()
-        timer = nil
-    }
-    
-    private func configureRemoteCommands() {
+    // MARK: - Configure Remote Commands
+    func configureRemoteCommands() {
         let commandCenter = MPRemoteCommandCenter.shared()
         
-        commandCenter.playCommand.addTarget { [weak self] _ in
-            self?.playPause()
+        // Play/Pause command
+        commandCenter.playCommand.addTarget { _ in
+            self.play()
             return .success
         }
         
-        commandCenter.pauseCommand.addTarget { [weak self] _ in
-            self?.playPause()
+        commandCenter.pauseCommand.addTarget { _ in
+            self.pause()
             return .success
         }
         
-        commandCenter.nextTrackCommand.addTarget { [weak self] _ in
-            self?.nextTrack()
+        // Next Track command
+        commandCenter.nextTrackCommand.addTarget { _ in
+            self.nextTrack()
             return .success
         }
         
-        commandCenter.previousTrackCommand.addTarget { [weak self] _ in
-            self?.previousTrack()
+        // Previous Track command
+        commandCenter.previousTrackCommand.addTarget { _ in
+            self.previousTrack()
             return .success
         }
-        
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-        try? AVAudioSession.sharedInstance().setActive(true)
+    }
+    
+    private func startRemoteControl() {
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+    }
+    
+    private func stopRemoteControl() {
+        UIApplication.shared.endReceivingRemoteControlEvents()
     }
 }
