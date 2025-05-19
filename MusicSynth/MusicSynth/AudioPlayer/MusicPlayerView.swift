@@ -35,7 +35,7 @@ struct MusicPlayerView: View {
             HStack {
                 Spacer()
                 Toggle("Switch", isOn: $isSwitched)
-                    .onChange(of: isSwitched) { _ in
+                    .onChange(of: isSwitched) {
                         audioManager.switchPlaylist()
                     }
                     .toggleStyle(SwitchToggleStyle())
