@@ -16,9 +16,22 @@
 		CEE85A662DC8F9110057F253 /* MusicSynth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicSynth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE8E0ABF2DDB697C00EF5779 /* Exceptions for "MusicSynth" folder in "MusicSynth" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CEE85A652DC8F9110057F253 /* MusicSynth */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CEE85A682DC8F9110057F253 /* MusicSynth */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE8E0ABF2DDB697C00EF5779 /* Exceptions for "MusicSynth" folder in "MusicSynth" target */,
+			);
 			path = MusicSynth;
 			sourceTree = "<group>";
 		};
@@ -272,6 +285,7 @@
 				DEVELOPMENT_TEAM = GZV8Q2554V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSynth/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -301,6 +315,7 @@
 				DEVELOPMENT_TEAM = GZV8Q2554V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MusicSynth/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
