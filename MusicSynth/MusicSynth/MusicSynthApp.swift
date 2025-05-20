@@ -11,7 +11,7 @@ import SwiftUI
 struct MusicSynthApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainScreen()
         }
     }
 }
