@@ -25,6 +25,7 @@ class AudioManager: ObservableObject {
     
     init() {
         switchToPlaylistA()
+        configureRemoteCommands()
     }
     
     func switchPlaylist() {
