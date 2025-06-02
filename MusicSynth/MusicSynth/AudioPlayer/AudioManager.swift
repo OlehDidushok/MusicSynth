@@ -16,8 +16,8 @@ class AudioManager: ObservableObject {
     @Published var trackNames: [String] = []
     @Published var activeTrackName: String = ""
     
-    private var playlistUsual = ["track1", "track2"]
-    private var playlistMidi: [String] = ["track3"]
+    private var playlistUsual = ["track1", "track2", "track3"]
+    private var playlistMidi: [String] = ["Tom and Jerry", "Beethoven", "Super Mario", "Happy birthday", "Cha Cha Slide Mix", "SpongeBob_s theme song", "Voices Of Spring", "Jingle Bells", "Pirates of the Caribbean"]
     
     private var player: AVAudioPlayer?
     private var currentTrackIndex: Int = 0

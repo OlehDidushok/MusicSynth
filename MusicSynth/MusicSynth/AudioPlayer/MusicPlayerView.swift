@@ -13,7 +13,7 @@ struct MusicPlayerView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            // 📜 Track List
+            
             List(audioManager.trackNames, id: \.self) { song in
                 HStack {
                     Text(song)
@@ -34,19 +34,18 @@ struct MusicPlayerView: View {
             
             HStack {
                 Spacer()
-                Toggle("Switch", isOn: $isSwitched)
+                Toggle("Arc music", isOn: $isSwitched)
                     .onChange(of: isSwitched) {
                         audioManager.switchPlaylist()
                     }
                     .toggleStyle(SwitchToggleStyle())
                     .padding()
             }
-            // 🎵 Current Track
+            
             Text(audioManager.activeTrackName)
                 .font(.title2)
                 .padding(.top)
             
-            // 🕓 Time Labels & Slider
             VStack {
                 HStack {
                     Text(audioManager.formatTime(audioManager.currentTime))
@@ -65,7 +64,6 @@ struct MusicPlayerView: View {
             }
             .padding()
             
-            // ▶️ Player Controls
             HStack(spacing: 40) {
                 Button(action: {
                     audioManager.previousTrack()
